@@ -1,0 +1,145 @@
+
+# Un fichero yaml puede tener comentarios. Aleluya!
+# La sintaxis de yaml está fuertemente inspirada en python
+# Dentro de un fichero yaml podemos tener muchos documentos yaml.
+#
+# Los separamos por ? 3 guiones
+# De hecho, tres guiones es la marca de INICIO DE DOCUMENTO... obligatoria salvo en el primer documento.
+#
+# En ocasiones podéis ver ... Es la marca de final de documento... O estoy en streaming ... o soy muy friki para usar eso.
+
+...
+# Y a la media hora quizás si o no, le mandemos otros que empezará
+---
+# Un documento yaml es un NODO.
+# Y hay dos tipos de nodos... Escalares, y nodos de colección
+...
+---
+# Escalares: Una valor discreto:
+# Números
+3
+---
+3.13
+---
+-.inf # -.Inf -.INF
+---
+.nan # -.NaN -.NAN
+---
+2.12
+-19.8
+---
+# Booleanos
+true # True TRUE
+---
+false # False FALSE
+--- 
+# Antiguamente en spec: 1.0 de YAML se admitían:
+# yes, no, on, off, y, n con variantes... 
+# Esto está fuera de estándar.. pero no fue deprecated.. directamente se quitó del estándar.
+---
+# Textos
+Esto" e\s 
+
+'un #Texto
+---
+"Esto\" e\\s 
+
+'un #Texto"
+---
+'Esto" e\s 
+
+''un #Texto'
+# La contrabarra solo se toma como caracter de escape entre comillas dobles.
+# Ahi podemos usar \" \\ \n \t
+# RESUMIENDO... la sintaxis preferida en yaml es SIN COMILLAS.
+# Solo usamos comillas cuando nos sea más cómodo... por tener en el texto #... o cosas raras.
+---
+# En cuanto quiero enredar con saltos de line, mejor uso una de las otras 2 SINTAXIS que YAML OFRECE para textos:
+# Literal 
+|2+
+    Esto es un texto
+  con saltos de línea
+  y no me preocupo de las comillas
+  ni de los caracteres de escape
+  ", ' \n \t"
+
+
+---
+# Folded
+# Igual que la literal pero con >
+>
+  Esto es un texto
+  con saltos de línea
+  y no me preocupo de las comillas
+  ni de los caracteres de escape
+  ", ' \n \t"
+# Aplican las mismas reglas que en literal... salvo que los saltos de linea son reemplazados por espacios.
+---
+# Otros datos Escalares:## Fechas: Se ponen en formato ISO 8601
+# Valor nulo: ~
+--- 
+# Nodos de colección: Hay un montón en el estandar. En Ansible usamos 2:
+# - Listas ordenadas
+- Item 1
+- Item 2
+- 33
+- True
+- 
+      - Subitem 1
+      -                    Subitem 22
+      - Subitem 3
+- - Item 1
+  - Item 2
+  - Item 3
+---
+
+# Sintaxis alternativa para listas:
+[Item 1, Item 2, 33, True, [Subitem 1, Subitem 22, Subitem 3], [Item 1, Item 2, Item 3]]
+# La de abajo está totalmente desaconsejada! Solo está ahí por 2 motivos:
+# Compatible con JSON
+# Para expresar listas vacias
+---
+[]
+# Por lo demás NO SE USA.
+# 1. Es menos legible.
+# 2. El fichero acaba en un un repo de un sistema de control de versiones... Al 99% git.
+#    Y git identifica cambios a nivel de LINEA DE TEXTO
+---
+#- Mapas desordenados
+# Son combinaciones clave/valor
+clave1: valor1
+clave2: valor2
+clave3: 33
+clave4: true
+clave5: 
+      - Subitem 1
+      - Subitem 22
+      - Subitem 3
+clave6:
+  subclave1: valor1
+  subclave2:                valor2
+  subclave3: 33
+
+---
+# Mapas DESORDENADOS
+clave1: valor 1
+clave2: valor 2
+clave3: 33
+---
+clave2: valor 2
+clave1: valor 1
+clave3: 33
+
+---
+# Sintaxis alternativa para mapas:
+{clave1: valor 1, clave2: valor 2, clave3: 33}
+# Está por compatibilidad con JSON
+# Indicar un mapa vacío
+---
+{}
+---
+# YAML me da una sintaxis básica. 
+# Cada programa que usa YAML debe aportar una GRAMATICA ESPECIFICA: definiendo un SCHEMA.
+# En el schema se define la estructura (tipos de nodos y nombres) que tiene que tener el documento YAML.
+# En Ansible, el schema es el de los playbooks... y otro para los inventarios.
+# En Kubernetes tiene su schema.

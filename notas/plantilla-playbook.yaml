@@ -1,0 +1,215 @@
+# Tengo una lista de PLAYS: PLAYBOOK
+- #PLAY 
+  name: "Nombre del play"
+  hosts: localhost
+      # all: todos los hosts del inventario son potenciales candidatos a ser receptores del play.
+        # Porque al final eso lo puedo refinar datos en tiempo de ejecución:
+        # --limit: para limitar a un grupo de hosts.
+      # localhost: Solo permite que este playbook se ejecute en la misma máquina donde se ejecuta ansible.
+      # host1, host2: Solo permite que este playbook se ejecute en los hosts host1 y host2.
+      # group1: Solo permite que este playbook se ejecute en los hosts que pertenecen al grupo group1.
+      # host1:host9: Solo permite que este playbook se ejecute en los hosts host1, host2, host3, host4, host5, host6, host7, host8 y host9.
+      # !host1: Solo permite que este playbook se ejecute en todos los hosts excepto en host1.
+      # !group1: Solo permite que este playbook se ejecute en todos los hosts excepto en los que pertenecen al grupo group1.
+      # En tiempo de ejecución SIEMPRE PODEMOS LIMITAR MAS AUN. Nunca extender.
+  gather_facts: False # Nunca gather_facts: True en un playbook.
+      # Fatal práctica: Tarda un huevo de tiempo... y me trae mil millones de datos de la máquina... de los cuales si acaso me interesarán 3.
+      # Y no podemos limitar aquí los datos que queremos recoger.
+      # Siempre cuando quiera usar facts trabajamos con el módulo setup.
+
+  vars: # Sirve para definir CONSTANTES !
+  # Ya que las variables, como VARIABLES que son (y potencialmente sujetas a cambios) se definen fuera del playbook.
+  # Las variables aquí las ponemos los desarrolladores del playbook para datos que usamos muchas veces en el script (playbook)
+  # De forma que si cambian en al algún momento del futuro, tenga un sitio centralizado donde cambiarlas con facilidad.
+
+    constante1: "valor1"
+    constante2: "valor2"
+    constante3: "valor3"
+  become: False # Para que se ejecute con privilegios de superusuario.
+               # En general otra muy mala práctica... Debería ejecutar como SUPERUSUARIO SOLO LO QUE NECESITE SER EJECUTADO COMO SUPERUSUARIO. 
+               # Usaré become a nivel de tarea.
+  
+  # Y otras
+  # Después las tareas: Tenemos 4 bloques de tareas:
+
+  pre_tasks: # Tareas que se ejecutan antes de las tareas del playbook.
+    - name: "Tarea de pre"
+      debug:
+        msg: "Esto es una tarea de pre"
+        # Comprobaciones acerca de si el playbook puede ejecutarse en el host.
+        # Instalar pre-requisitos necesarios para la ejecución del playbook.
+        # Configuraciones previas necesarias para la ejecución del playbook.
+
+  tasks: # Tareas que se ejecutan en el playbook.
+    - name: "Tarea 1"
+      debug:
+        msg: "Esto es la tarea 1"
+    - name: "Tarea 2"
+      debug:
+        msg: "Esto es la tarea 2"
+      notify: "Handler 1" # Invoca un evento que será escuchado por un handler.
+    - name:
+      meta: flush_handlers # Ejecuta los handlers que se han invocado en las tareas anteriores.
+             # end_play: Ejecuta los handlers que se han invocado en las tareas anteriores y en las tareas de post.
+             # end_host: Ejecuta los handlers que se han invocado en las tareas anteriores, en las tareas de post y en las tareas de otros hosts.
+             # El módulo meta ofrece características avanzadas de control de flujo. MUY PELIGROSO.!!! USAR CON MUCHO CUIDADO.
+      when:
+      tags:
+    - name: "Tarea 3"
+      debug:
+        msg: "Esto es la tarea 3"
+    - name: "Tarea 4"
+      debug:
+        msg: "Esto es la tarea 4"
+      notify: "Handler 1" # Invoca un evento que será escuchado por un handler.
+    - name: "Tarea 5"
+      debug:
+        msg: "Esto es la tarea 5"
+    - name:  Instalar "X" herramienta
+      block:                                                                  # try{
+        - name: "Instalar herramienta"
+          apt:
+            name: "herramienta"
+            state: present
+        - name: "Configurar herramienta"
+          template:
+            src: "plantilla.j2"
+            dest: "/etc/herramienta.conf"
+        - name: "Crear servicio"
+          systemd:
+            name: "herramienta"
+            state: started
+            enabled: yes
+      rescue: # Entra si alguna tarea del bloque falla.                       } catch
+        - name: "Desinstalar herramienta"
+          apt:
+            name: "herramienta"
+            state: absent
+        - name: "Eliminar configuración"      
+          file:
+      always:  # Entra siempre, haya fallado o no alguna tarea del bloque.    } finally / default
+        - name: "Reiniciar servicio"
+          systemd:
+            name: "herramienta"
+            state: restarted
+      tags: 
+      - instalacion
+  post_tasks: # Tareas que se ejecutan después de las tareas del playbook.
+    - name: "Tarea de post"
+      debug:
+        msg: "Esto es una tarea de post"
+      notify: event1 # Invoca un evento que será escuchado por un handler. # RUINA !!!!
+
+    - name: "Tarea de ejemplo más completa"
+      modulo:
+        con las opciones: # DECLARATIVO (comunicación con el módulo. Las instrucciones que le doy a UN MODULO)
+          que necesite
+      become: True  # Para que se ejecute con privilegios de superusuario.      
+      when: # Condición que se debe cumplir para que la tarea se ejecute.
+        - ansible_distribution == "Ubuntu"                  # Sintaxis JINJA... una expresión JINJA que devuelva un valor booleano.
+        - ansible_distribution_major_version == "18"
+        # Para que la tarea se ejecute, todas ellas deben dar TRUE... es decir se anidan con un AND.
+        # Sería lo mismo que haber escrito:
+        # when: ansible_distribution == "Ubuntu" and ansible_distribution_major_version == "18"
+
+      register: salida  # Variable que almacena la salida de la tarea anterior... Esa salida la provee el módulo que se ejecuta en la tarea.
+      
+      # Expresión que si se cumple, DESPUES DE EJECUTARSE LA TAREA, La tarea se marca como que ha cambiado el sistema.
+      changed_when: salida.rc == 1
+
+      # He montado un script que para informar a ansible de si provoca o no cambios, devuelve un 0 si no ha cambiado nada y un 1 si ha cambiado algo.
+      # En caso de error devuelve un 2.
+
+      # Expresión que si se cumple, DESPUES DE EJECUTARSE LA TAREA, La tarea se marca como que ha fallado.
+      failed_when: salida.rc > 1
+
+      tags: # Identifican la naturaleza de la tarea
+        - pruebas
+
+      ignore_errors: True # Para que si la tarea falla, no se detenga la ejecución del playbook.
+      # Aunque la tarea falle (y se marca como fallida (aunque ignorada)) el playbook sigue...
+      # Porque si una tarea falla, cuál es el comportamiento por defecto en ansible para el playbook?
+      # Parar la ejecución PARA EL NODO ACTUAL... puede seguir con los demás nodos.
+      delegate_to: HOST
+        # Esto hace que la tarea actual se ejecute en el nodo que indiquemos ahí y no en el nodo en el que se está ejecutando el playbook.
+        # He instalado un servidor web.
+        # Que pruebas haré?.. en el post?
+
+        # Mirar a ver si en el host está el puerto 80 abierto?
+          # Ha arrancado el apache en ese puerto?
+        # curl http://localhost:80... eso se debería ejecutar en la misma máquina donde se ha instalado el servidor web.
+          # El apache está sirviendo
+        # curl http://IP_DEL_NODO:80... eso lo ejecutaría en otra máquina
+          # Está bien configurado el firewall? 
+          # Esta prueba la podría ejecutar en una máquina externa al nodo que tenga conexión con el nodo... se os ocurre alguna?
+          # Donde se ejecuta el ansible.
+          # delegate_to: localhost
+
+        # Ejecutaría TODAS !!!!! y cada una de ellas!
+        # Cada una me responde a una pregunta.
+        # Desde luego la última si funciona es que las anteriores están OK....
+        # El problema es si no funciona... dónde está el fallo? 
+        # Las pruebas no se montan solo para ver si el sistema está guay...
+        # También sirven para si no está guay, saber dónde está el fallo.
+      vars: # Si un dato necesito transformarlo para esta tarea... debido al módulo particular que estoy usando.
+      # Tengo una variable que me pasa el usuario llamada port, pero mi modulo necesita una variable puerto.
+        puerto: "{{ port }}"  
+        method: "{{method | upper}}"
+  # Principalmente Test
+    - name: "Tarea de test"
+      debug:
+        msg: "Esto es una {{ item }} de test"
+      vars:
+        palabras:
+          - "hola"
+          - "adios"
+          - "buenos días"
+          - "buenas noches"
+      loop: "{{ palabras }}" # antiguamente los with_XXX
+      # otra opción es el until: que se ejecuta hasta que se cumple la condición.
+      run_once: True # Para que la tarea se ejecute una sola vez.
+
+  handlers: # Tareas que se ejecutan cuando se invoca un evento.
+    - name: "Handler 1"
+      debug:
+        msg: "Esto es el handler 1"
+      listen: "event1" # Escucha el evento event1.
+    - name: "Handler 2"
+      debug:
+        msg: "Esto es el handler 2"
+# Primero van los pre, después los tasks y por último los post.
+# Los handlers se ejecutan cuando explicitamente se refencian en una tarea handler: nombre_del_handler
+# O cuando se invoca un evento que esté siendo escuchado por un handler. ** OPCION RECOMENDADA DE TODAS TODAS !!!!!!!
+# Y además, la tarea que notifique al handler (o al evento) haya provocado un cambio en el sistema.
+# Pero eso ocurre detrás de cada bloque pre, tasks y post.
+
+
+
+---
+
+# Archivo despliegue de la app app1 en entorno de pre: app1-ansible-values-desa.yaml
+usuario: "postgres"
+contraseña: "postgres"
+nombre_bbdd: "mi_base_de_datos"
+
+---
+- name: Instalar postgreSQL
+  hosts: bbdd
+  variables: 
+
+    usuario: "changeme"
+    contraseña: "changeme"
+    nombre_bbdd: "changeme"
+
+    repo:
+      apt: "deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main"
+      yum: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
+
+    tasks:
+      - ...
+
+  # Siempre lo podría pasar por linea de comandos... cosa que no haríamos NUNCA por ser una MUY MALA PRACTICA... ya que?
+  # Dónde han quedado registrados los datos con los que se ha ejecutado el playbook? LOGS??? Pues vaya capacidad de auditoría que tenemos.
+  # Y si falla y quiero ejecutar la versión anterior?? de dónde saco los valores?
+  # LAs variables, en FICHEROS, sometidas a control de versión! 
+  # Cuando despliego algo NECESITO SABER EN EL FUTURO que se ha desplegado y con qué valores.
