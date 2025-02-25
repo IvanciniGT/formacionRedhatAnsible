@@ -1,0 +1,19 @@
+apache:
+    version:              2.4
+    repos:
+        - apt:            ppa:ondrej/apache2
+        - yum:            https://repos.fedorapeople.org/repos/jkaluza/httpd24/epel-httpd24.repo
+    virtual_hosts:
+        - port:           80
+          domain:         www.midominio.com
+          document_root:  /var/www/html
+          repo_git:
+            url:          https://github.com/webserver-repo.git
+            user:         mi-usuarios
+            password:     super-secreta
+    dependencies:
+        - name:           git
+          version:        2.30
+          repos:
+            - apt:        ppa:git-core/ppa
+            - yum:        https://repos.fedorapeople.org/repos/jkaluza/git/epel-git.repo

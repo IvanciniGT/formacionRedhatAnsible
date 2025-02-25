@@ -1,0 +1,57 @@
+- name:               Instalación y configuración de un servidor web Apache
+  hosts:              all
+  gather_facts:       False
+  vars:               {}
+
+  pre_tasks:
+
+    - name:           Asegurar que el host es compatible con este playbook
+      include_tasks:  pre_tasks/asegurar.compoatibilidad.tasks.yaml
+      tags:
+                    - always      # always never: Son tags especiales de Ansible (PREDEFINIDOS POR ANSIBLE)
+
+    - name:           Asegurar que el host soporta la instalación de apache
+      include_tasks:  pre_tasks/asegurar.entorno.tasks.yaml
+      tags:
+                    - requisitos
+
+    - name:           Asegurar que tengo las dependencias necesarias
+      include_tasks:  pre_tasks/asegurar.dependencias.tasks.yaml
+      tags:
+                    - requisitos
+
+  tasks:
+
+    - name:           Asegurar que Apache queda instalado en la versión deseada
+      include_tasks:  tasks/asegurar.instalacion.apache.tasks.yaml
+      tags:
+                    - instalacion
+
+    - name:           Asegurar que los virtual hosts están configurados
+      include_tasks:  tasks/asegurar.configuracion.virtualhosts.tasks.yaml
+      tags:
+                    - configuracion
+
+    - name:           Asegurar que el servicio de apache queda en ejecución
+      include_tasks:  tasks/asegurar.servicio.apache.tasks.yaml
+      tags:
+                    - configuracion
+
+  post_tasks:
+
+    - name:           Comprobar que todo ha quedado configurado como debe
+      include_tasks:  post_tasks/comprobar.apache.tasks.yaml
+      tags:
+                    - pruebas
+
+  handlers:
+
+    - name:           Asegurar que el servicio de apache es reiniciado si ha habido cambios
+      include_tasks:
+      tags:
+                    - configuracion
+      listen:         reinicio-requerido
+
+
+
+# No voy a usar NI UN SOLO MODULO EN ESTE FICHERO.-.. que no sea el módulo include_tasks:

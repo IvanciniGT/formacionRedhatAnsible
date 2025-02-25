@@ -25,3 +25,6 @@ Querremos arrancarlo... y que se arranque con la máquina:
 - Con el demonio de sistema : el systemd... que nosotros hablamos normalmente con el con systemctl
 
 Modulo de apache!
+
+c:\usuarios\yo\formacionAnsible\proyecto
+c:\usuarios\yo\formacionAnsible
