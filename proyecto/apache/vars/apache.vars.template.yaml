@@ -1,8 +1,8 @@
 apache:
     version:              2.4
     repos:
-        apt:              ppa:ondrej/apache2
-        yum:              https://repos.fedorapeople.org/repos/jkaluza/httpd24/epel-httpd24.repo
+        - apt:              ppa:ondrej/apache2
+        - yum:              https://repos.fedorapeople.org/repos/jkaluza/httpd24/epel-httpd24.repo
     virtual_hosts:
         - port:           80
           domain:         www.midominio.com
@@ -11,16 +11,6 @@ apache:
             url:          https://github.com/webserver-repo.git
             user:         mi-usuarios
             password:     super-secreta
-    dependencies:
-        - name:           git
-          version:        2.30
-          repos:
-            - apt:        ppa:git-core/ppa
-              key:        https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x4F4EA0AAE5267A6C
-            - yum:        https://repos.fedorapeople.org/repos/jkaluza/git/epel-git.repo
-        - name:           curl
-          version:        2.30
-          repos:
-            - apt:        ppa:git-core/ppa
-              key:        https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x4F4EA0AAE5267A6C
-            - yum:        https://repos.fedorapeople.org/repos/jkaluza/git/epel-git.repo
+    apache_modules:
+        - name: a2enmod
+        - name: a2dismod

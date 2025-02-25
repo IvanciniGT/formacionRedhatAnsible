@@ -1,26 +1,26 @@
 
-- name: 
+- name:               Asegurar que las claves de los repos apt están en la máquina
   apt_key:
-    url:              "{{ item.key }}"
+    url:              "{{ item.1.key }}"
     state:            present
-  when:               item.apt is defined
-  loop:               "{{ packages_to_install }}"
+  when:               item.1.apt is defined and item.1.key is defined
+  loop:               "{{ packages_to_install | subelements('repos', skip_missing=True) }}"
   # Ansible siempre primero ejecuta el loop.
   # Si hay un when, entonces el when es ejecutado para cada item del loop
   # SIEMPRE... SIN REMEDIO
 
-- name: 
+- name:               Asegurar que los repos de apt están registrados en la máquina
   apt_repository:
-    repo:             "{{ item.apt }}"
+    repo:             "{{ item.1.apt }}"
     state:            present
-  loop:               "{{ packages_to_install }}"
-  when:               item.apt is defined
+  loop:               "{{ packages_to_install | subelements('repos', skip_missing=True) }}"
+  when:               item.1.apt is defined
 
-- name:               Actualizar apt con los repos de la paquetería
+- name:               Asegurar que apt está actualizado con la información de los repos
   apt:
     update_cache:     yes
 
-- name:               Instalar dependencia en Ubuntu
+- name:               Asegurar que la paquetería indicada está instalada
   apt:
     name: |
                       {{ item.name }}

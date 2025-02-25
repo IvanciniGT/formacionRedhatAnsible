@@ -1,10 +1,6 @@
 - name:               Instalación y configuración de un servidor web Apache
   hosts:              all
   gather_facts:       False
-  vars:               
-      sistemas_operativos_soportados:
-          - Ubuntu
-          - Redhat
 
   pre_tasks:
 

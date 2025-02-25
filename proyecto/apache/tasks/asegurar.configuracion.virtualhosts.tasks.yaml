@@ -1,0 +1,9 @@
+
+# Asegurar que el directorio del document root existe
+
+# Asegurar que la versión de la app o web solicitada esta descargada de git
+#notify: reinicio-requerido
+
+# Asegurar que existe un fichero de configuración con la información adecuada específico para el virtual host (basado en una plantilla)
+
+#notify: reinicio-requerido

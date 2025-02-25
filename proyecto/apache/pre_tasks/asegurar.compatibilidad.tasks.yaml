@@ -8,14 +8,15 @@
 - name:             Informar de la viabilidad de este playbook
   debug:
     msg: |
-                    El sistema operativo del host es: Ubuntu.
-                    {%- if true %}
+                    El sistema operativo del host es: {{ ansible_distribution }}.
+                    {% if ansible_distribution in constants.sistemas_operativos_soportados %}
                     Este playbook es compatible con ese sistema operativo.
-                    {%- else %}
+                    {% else %}
                     Este playbook NO es compatible con ese sistema operativo.
-                    {%- endif -%}
+                    {% endif %}
+                  # Todo: Revisar formato de este mensaje.
 
 - name:             Detener el playbook si el Sistema Operativo no es compatible
   meta:             end_host
   when:
-                  - ansible_distribution not in sistemas_operativos_soportados
+                  - ansible_distribution not in constants.sistemas_operativos_soportados
