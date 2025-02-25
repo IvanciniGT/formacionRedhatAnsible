@@ -1,0 +1,5 @@
+- name:           Cargar variables por defecto, si no se ha suministrado un fichero de variables válido
+  include_vars:
+    file:         "vars/apache.vars.default.yaml"
+    name:         apache
+  when:           apache is not defined

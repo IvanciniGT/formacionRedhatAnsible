@@ -1,0 +1,51 @@
+
+- name: 
+  apt_key:
+    url:              "{{ item.key }}"
+    state:            present
+  when:               item.apt is defined
+  loop:               "{{ packages_to_install }}"
+  # Ansible siempre primero ejecuta el loop.
+  # Si hay un when, entonces el when es ejecutado para cada item del loop
+  # SIEMPRE... SIN REMEDIO
+
+- name: 
+  apt_repository:
+    repo:             "{{ item.apt }}"
+    state:            present
+  loop:               "{{ packages_to_install }}"
+  when:               item.apt is defined
+
+- name:               Actualizar apt con los repos de la paquetería
+  apt:
+    update_cache:     yes
+
+- name:               Instalar dependencia en Ubuntu
+  apt:
+    name: |
+                      {{ item.name }}
+                      {%- if item.version is defined -%}
+                        ={{ item.version }}
+                      {%- end if -%}
+
+    state: |
+                      {%- if item.version is defined -%}
+                        present
+                      {%- else -%}
+                        latest
+                      {%- end if -%}
+
+  loop:               "{{ packages_to_install }}"
+
+
+
+#item:
+  #name:           git
+  #version:        2.30
+  #repos:
+  #  - apt:        ppa:git-core/ppa
+  #    key:        https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x4F4EA0AAE5267A6C
+  #  - yum:        https://repos.fedorapeople.org/repos/jkaluza/git/epel-git.repo
+
+
+

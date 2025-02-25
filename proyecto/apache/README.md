@@ -71,3 +71,11 @@ Por ejemplo, mi playbook permite instalar Apache en:
 - Ubuntu
 - Fedora
 Si vienes con un Debian... te vas como has venido. BUSCATE UN PLAYBOOK QUE SOPORTE FEDORA.
+
+
+---
+
+Ansible me define un lenguaje de programación... basado en YAML.
+
+Me da un schema yaml para que yo pueda escribir mi playbook.
+Y además.. tengo un monton de modulos con su propio lenguaje.

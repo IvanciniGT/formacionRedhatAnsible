@@ -1,12 +1,20 @@
 - name:               Instalación y configuración de un servidor web Apache
   hosts:              all
   gather_facts:       False
-  vars:               {}
+  vars:               
+      sistemas_operativos_soportados:
+          - Ubuntu
+          - Redhat
 
   pre_tasks:
 
     - name:           Asegurar que el host es compatible con este playbook
-      include_tasks:  pre_tasks/asegurar.compoatibilidad.tasks.yaml
+      include_tasks:  pre_tasks/asegurar.compatibilidad.tasks.yaml
+      tags:
+                    - always      # always never: Son tags especiales de Ansible (PREDEFINIDOS POR ANSIBLE)
+
+    - name:           Cargar variables
+      include_tasks:  pre_tasks/cargar.variables.tasks.yaml
       tags:
                     - always      # always never: Son tags especiales de Ansible (PREDEFINIDOS POR ANSIBLE)
 

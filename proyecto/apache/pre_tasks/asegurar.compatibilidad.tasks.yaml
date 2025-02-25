@@ -1,0 +1,21 @@
+- name:             Averiguar el Sistema Operativo del host
+  setup:
+    gather_subset:
+                  - '!all'
+                  - '!min'
+                  - distribution
+
+- name:             Informar de la viabilidad de este playbook
+  debug:
+    msg: |
+                    El sistema operativo del host es: Ubuntu.
+                    {%- if true %}
+                    Este playbook es compatible con ese sistema operativo.
+                    {%- else %}
+                    Este playbook NO es compatible con ese sistema operativo.
+                    {%- endif -%}
+
+- name:             Detener el playbook si el Sistema Operativo no es compatible
+  meta:             end_host
+  when:
+                  - ansible_distribution not in sistemas_operativos_soportados
