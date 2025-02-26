@@ -3,22 +3,21 @@ sistemas_operativos_soportados:
                         - Redhat
 dependencies:
         - name:           git
-          version:        2.30
-          repos:
-            - apt:        ppa:git-core/ppa
-              key:        https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x4F4EA0AAE5267A6C
-            - yum:        https://repos.fedorapeople.org/repos/jkaluza/git/epel-git.repo
+          repos:          []
+#            - apt:        ppa:git-core/ppa
+#              key:        https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x4F4EA0AAE5267A6C
+#            - yum:        https://repos.fedorapeople.org/repos/jkaluza/git/epel-git.repo
 
         - name:           curl
-          version:        2.30
-          repos:
-            - apt:        ppa:git-core/ppa
-              key:        https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x4F4EA0AAE5267A6C
-            - yum:        https://repos.fedorapeople.org/repos/jkaluza/git/epel-git.repo
+          #version:        2.30
+          repos:          []
+#            - apt:        ppa:git-core/ppa
+#              key:        https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x4F4EA0AAE5267A6C
+#            - yum:        https://repos.fedorapeople.org/repos/jkaluza/git/epel-git.repo
 
 virtualhosts:
   path: 
-    Ubuntu:               /etc/apache2/sites-available
+    Ubuntu:               /etc/apache2/sites-enabled
     Redhat:               /etc/httpd/conf.d
   
 service:

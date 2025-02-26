@@ -3,8 +3,11 @@
   systemd:
     name:     "{{ constants.service_name[ ansible_distribution ] }}"
     enabled:  true
+  become:   True
 
 - name:       Asegurar que el servicio de Apache quedar arrancado
   systemd:
     name:     "{{ constants.service_name[ ansible_distribution ] }}"
     state:    started
+  become:   True
+    

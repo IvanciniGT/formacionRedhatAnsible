@@ -17,32 +17,39 @@
       file:
         state:  directory
         path:   "{{ apache.backups_dir }}"
+      become:   True
         
     - name:     Asegurar que si hay algo, le hago copia de seguridad
       archive:
         path:   "{{ virtualhost.document_root }}"
         dest:   "{{ apache.backups_dir }}/{{ virtualhost.domain }}-{{ansible_date_time}}.tar.gz"
+      become:   True
 
     - name:     Asegurar que el directorio del document root no existe
       file: 
         state:  absent
         path:   "{{ virtualhost.document_root }}"
+      become:   True
+
   when:         document_root_contents.stdout | int > 0
 
 - name:         Asegurar que el directorio del document root existe
   file:
     state:      directory
     path:       "{{ virtualhost.document_root }}"
+  become:   True
 
 - name:         Asegurar que la versión de la app o web solicitada esta descargada de git
   git:
     repo:       "{{ virtualhost.repo_git.url }}"
     dest:       "{{ virtualhost.document_root }}"
     depth:      1
+  become:   True
 
 - name:         Asegurar que existe un fichero de configuración con la información adecuada específico para el virtual host (basado en una plantilla)
   template:
     src:        templates/virtual.host.template.j2
     dest:       "{{ constants.virtualhosts.path[ansible_distribution] }}/{{ virtualhost.domain }}.conf"
   notify:       reinicio-requerido
+  become:   True
 

@@ -1,0 +1,15 @@
+apache:
+    version:              2.4
+    #repos:
+    #    - apt:              ppa:ondrej/apache2
+    #    - yum:              https://repos.fedorapeople.org/repos/jkaluza/httpd24/epel-httpd24.repo
+    virtual_hosts:
+        - port:           81
+          domain:         localhost
+          document_root:  /var/www/html2
+          repo_git:
+            url:          https://github.com/IvanciniGT/webEjemploAnsible.git
+            #user:         mi-usuarios
+            #password:     super-secreta
+    apache_modules: []
+    backups_dir:         /var/backups/apache
