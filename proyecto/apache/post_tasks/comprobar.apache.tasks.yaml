@@ -1,9 +1,9 @@
 
 - name:         Comprobar si el proceso esta corriendo
-  shell:        ps -ef  |  grep {{constants.service_name[ ansible_distribution ]}}  |  wc -l
+  shell:        ps -ef  |  grep {{constants.service[ ansible_distribution ]}}  |  wc -l
   register:     httpd_process_count
   changed_when: False
-  failed_when:  httpd_process_count  |  int  <=  1
+  failed_when:  httpd_process_count.stdout  |  int  <=  1
 
 - name:         Comprobar si los puertos de los virtualhosts están en funcionamiento
   wait_for:
@@ -11,13 +11,22 @@
     delay:      5
     timeout:    10
     msg:        "El puerto: {{virtualhost.port}} del virtualhost: {{virtualhost.domain}} no está disponible"
-
+  loop:         "{{ apache.virtual_hosts }}"
+  loop_control:
+    loop_var:       virtualhost
+    
 - name:         Comprobar si puedo acceder a los servicios desde local
   shell:        "curl http://localhost:{{virtualhost.port}}"
-  change_when:  False  
+  changed_when:  False  
+  loop:         "{{ apache.virtual_hosts }}"
+  loop_control:
+    loop_var:       virtualhost
 
 - name:         Comprobar si puedo acceder a los servicios desde remoto
   uri: 
     url:        "http://{{inventory_hostname}}:{{virtualhost.port}}"
     method:     GET
   delegate_to: localhost
+  loop:         "{{ apache.virtual_hosts }}"
+  loop_control:
+    loop_var:       virtualhost

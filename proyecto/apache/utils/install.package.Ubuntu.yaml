@@ -21,22 +21,23 @@
 - name:               Asegurar que apt está actualizado con la información de los repos
   apt:
     update_cache:     yes
-  become:   True
+  become:             True
+  changed_when:       False
 
-- name:               Asegurar que la paquetería indicada está instalada
+- name:               "Asegurar que la el paquete {{ item.name }} queda instalado"
   apt:
     name: |
                       {{ item.name }}
                       {%- if item.version is defined -%}
                         ={{ item.version }}
-                      {%- end if -%}
+                      {%- endif -%}
 
-    state: |
+    state: |-
                       {%- if item.version is defined -%}
                         present
                       {%- else -%}
                         latest
-                      {%- end if -%}
+                      {%- endif -%}
 
   loop:               "{{ packages_to_install }}"
   become:   True

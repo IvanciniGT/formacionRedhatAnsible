@@ -1,6 +1,6 @@
 
 - name:                   Asegurar que quedan instaladas las dependencias necesarias para el playbook
-  include_tasks:          util/install.package.{{ansible_distribution}}.yaml
+  include_tasks:          utils/install.package.{{ansible_distribution}}.yaml
   vars:
     packages_to_install:  "{{ constants.dependencies }}"
 

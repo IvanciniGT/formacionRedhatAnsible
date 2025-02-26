@@ -1,7 +1,7 @@
 
 # Asegurar que el directorio del document root existe
-- name: Asegurar que cada virtual host quede configurado
-  include_tasks: /tasks/asegurar.configuracion.virtualhost.tasks.yaml
-  loop: "{{ apache.virtual_hosts }}"
+- name:             Asegurar que cada virtual host quede configurado
+  include_tasks:    tasks/asegurar.configuracion.virtualhost.tasks.yaml
+  loop:             "{{ apache.virtual_hosts }}"
   loop_control:
-    loop_var: virtualhost
+    loop_var:       virtualhost

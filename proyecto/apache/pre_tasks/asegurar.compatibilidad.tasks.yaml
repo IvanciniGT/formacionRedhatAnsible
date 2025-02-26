@@ -3,6 +3,7 @@
     gather_subset:
                   - '!all'
                   - '!min'
+                  - date_time
                   - distribution
 
 - name:             Informar de la viabilidad de este playbook

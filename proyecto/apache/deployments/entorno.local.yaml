@@ -1,5 +1,5 @@
 apache:
-    version:              2.4
+    #version:              ~ #2.4.52
     #repos:
     #    - apt:              ppa:ondrej/apache2
     #    - yum:              https://repos.fedorapeople.org/repos/jkaluza/httpd24/epel-httpd24.repo
