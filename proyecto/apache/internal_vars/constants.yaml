@@ -16,3 +16,11 @@ dependencies:
               key:        https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x4F4EA0AAE5267A6C
             - yum:        https://repos.fedorapeople.org/repos/jkaluza/git/epel-git.repo
 
+virtualhosts:
+  path: 
+    Ubuntu:               /etc/apache2/sites-available
+    Redhat:               /etc/httpd/conf.d
+  
+service:
+  Ubuntu:                 apache2
+  Redhat:                 httpd

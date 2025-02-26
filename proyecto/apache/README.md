@@ -79,3 +79,39 @@ Ansible me define un lenguaje de programación... basado en YAML.
 
 Me da un schema yaml para que yo pueda escribir mi playbook.
 Y además.. tengo un monton de modulos con su propio lenguaje.
+
+
+---
+
+Meter más de un return en una función es una mala práctica.
+
+function algo(){
+  hago una cosa
+  hago otra cosa
+  si(tal cosa):
+    hago otrea cosa mas
+  sino si (otra cosa mas):
+    me piro (return)
+  sino 
+    una ultima cosa
+    me piro (return)
+  otra coita que se me olvidaba
+  me piro (return)
+}
+
+funcion algo() {
+  if(pasaloquesea())
+    return 0;
+  else
+    return 33;
+}
+
+
+funcion algo() {
+  var elDatoQueVoyADevolver= null;
+  if(pasaloquesea())
+    elDatoQueVoyADevolver= 0;
+  else
+    elDatoQueVoyADevolver= 33;
+  return elDatoQueVoyADevolver;
+}

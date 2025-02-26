@@ -1,5 +1,10 @@
-# Tendré que asegurarme que el servicio existe (esto lo hacen el yum y el apt)
 
-# Tendré que hacer un enabled
+- name:       Asegurar que el servicio de Apache quedar activado
+  systemd:
+    name:     "{{ constants.service_name[ ansible_distribution ] }}"
+    enabled:  true
 
-# Arrancarlo si no lo está
+- name:       Asegurar que el servicio de Apache quedar arrancado
+  systemd:
+    name:     "{{ constants.service_name[ ansible_distribution ] }}"
+    state:    started

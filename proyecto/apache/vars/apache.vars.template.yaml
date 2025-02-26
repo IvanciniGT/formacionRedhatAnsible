@@ -11,6 +11,14 @@ apache:
             url:          https://github.com/webserver-repo.git
             user:         mi-usuarios
             password:     super-secreta
+        - port:           81
+          domain:         www.midominio2.com
+          document_root:  /var/www/html2
+          repo_git:
+            url:          https://github.com/webserver-repo.git
+            user:         mi-usuarios
+            password:     super-secreta
     apache_modules:
         - name: a2enmod
         - name: a2dismod
+    backups_dir:         /var/backups/apache

@@ -4,15 +4,15 @@
 
   pre_tasks:
 
-    - name:           Asegurar que el host es compatible con este playbook
-      include_tasks:  pre_tasks/asegurar.compatibilidad.tasks.yaml
-      tags:
-                    - always      # always never: Son tags especiales de Ansible (PREDEFINIDOS POR ANSIBLE)
-
     - name:           Cargar variables
       include_tasks:  pre_tasks/cargar.variables.tasks.yaml
       tags:
                     - always      # always never: Son tags especiales de Ansible (PREDEFINIDOS POR ANSIBLE)
+
+    - name:           Asegurar que el host es compatible con este playbook
+      include_tasks:  pre_tasks/asegurar.compatibilidad.tasks.yaml
+      tags:
+                    - always
 
     - name:           Asegurar que el host soporta la instalación de apache
       include_tasks:  pre_tasks/asegurar.entorno.tasks.yaml

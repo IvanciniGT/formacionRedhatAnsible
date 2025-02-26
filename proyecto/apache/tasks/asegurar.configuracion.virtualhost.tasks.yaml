@@ -1,0 +1,48 @@
+
+#- name:       Mirar si el virtualhost document root existe
+#  stat:
+#    path:    "{{ virtualhost.document_root }}"
+#  register:  document_root_status
+
+- name:         Mirar si el virtualhost document root tiene contenido
+  shell:        "ls -A {{ virtualhost.document_root }} 2>/dev/null | wc -l"
+  register:     document_root_contents
+  #failed_when:  False    Se devuelve siempre el código del wc.. que siempre es 0
+  change_when:  False
+#  when:      document_root_status.stat.exists
+
+- name:         Asegurar que el directorio está vacío
+  block:
+    - name:     Asegurar que el directorio de backups existe
+      file:
+        state:  directory
+        path:   "{{ apache.backups_dir }}"
+        
+    - name:     Asegurar que si hay algo, le hago copia de seguridad
+      archive:
+        path:   "{{ virtualhost.document_root }}"
+        dest:   "{{ apache.backups_dir }}/{{ virtualhost.domain }}-{{ansible_date_time}}.tar.gz"
+
+    - name:     Asegurar que el directorio del document root no existe
+      file: 
+        state:  absent
+        path:   "{{ virtualhost.document_root }}"
+  when:         document_root_contents.stdout | int > 0
+
+- name:         Asegurar que el directorio del document root existe
+  file:
+    state:      directory
+    path:       "{{ virtualhost.document_root }}"
+
+- name:         Asegurar que la versión de la app o web solicitada esta descargada de git
+  git:
+    repo:       "{{ virtualhost.repo_git.url }}"
+    dest:       "{{ virtualhost.document_root }}"
+    depth:      1
+
+- name:         Asegurar que existe un fichero de configuración con la información adecuada específico para el virtual host (basado en una plantilla)
+  template:
+    src:        templates/virtual.host.template.j2
+    dest:       "{{ constants.virtualhosts.path[ansible_distribution] }}/{{ virtualhost.domain }}.conf"
+  notify:       reinicio-requerido
+
