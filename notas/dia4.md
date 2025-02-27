@@ -1,4 +1,5 @@
-Hemos de tratar de garantizar que si el playbook no hace nada, que no haya tareas con estado changed!
+Hemos de tratar de garantizar que si el playbook no hace nada
+que no haya tareas con estado changed!
 
 
 URL: http://            miservidor: 80          /index.html
@@ -13,9 +14,12 @@ El apache responde con lo que haya en el path asociado a ese dominio / puerto
     Y ese dominio / puerto (virtualhost) tiene asociado un Document ROOT???
         ROOT? La carpeta raiz... que en POSIX se define como:  /
         
-        Entonces, apache devuelve lo que hay en DOCUMENT_ROOT/.git/y mis mierdas!!!
-        Entonces, apache devuelve lo que hay en DOCUMENT_ROOT/index.html
-        Entonces, apache devuelve lo que hay en DOCUMENT_ROOT/carpeta1/menchu.html
+        Entonces
+apache devuelve lo que hay en DOCUMENT_ROOT/.git/y mis mierdas!!!
+        Entonces
+apache devuelve lo que hay en DOCUMENT_ROOT/index.html
+        Entonces
+apache devuelve lo que hay en DOCUMENT_ROOT/carpeta1/menchu.html
 
 
 
@@ -39,10 +43,14 @@ Virtual host
 
 1. Mirar si ya existe la capreta del virtualhost (document root)
 4. Clonamos repo en una carpeta de despliegues: /tmp/despliegues
-    Cuando clono el repo, si el repo ya existe en la misma versión que dice el modulo? ok
-    Cuando clono el repo, si el repo ya existe en otra versión que dice el modulo? changed
-    Cuando clono el repo, si el repo no existe que dice el modulo? changed
-        Y en cualquier caso, el repo queda en la verisón que yo he pedido. IDEMPOTENCIA
+    Cuando clono el repo
+si el repo ya existe en la misma versión que dice el modulo? ok
+    Cuando clono el repo
+si el repo ya existe en otra versión que dice el modulo? changed
+    Cuando clono el repo
+si el repo no existe que dice el modulo? changed
+        Y en cualquier caso
+el repo queda en la verisón que yo he pedido. IDEMPOTENCIA
 #1.5 Leer el Commit ID anterior
 #        - Puedo leerlo del ficherito de texto
 2. Si la tarea de antes acaba con un CommitID distinto al que acabamos de leer (el del play anterior)
@@ -63,13 +71,17 @@ Virtual host
    Y no marco:
         changed_when: False
 7. Aplicar la plantilla del virtual host
-    Cuando aplico la plantilla y la escribo en un fichero... si ese fichero no existe, 
+    Cuando aplico la plantilla y la escribo en un fichero... si ese fichero no existe
+
         qué dice el modulo? changed
     Cuando aplico la plantilla y la escribo en un fichero... si ese fichero ya existe y tiene
-        un contenido distinto, qué dice el modulo? changed
+        un contenido distinto
+qué dice el modulo? changed
     Cuando aplico la plantilla y la escribo en un fichero... si ese fichero ya existe y tiene
-        el mismo contenido, qué dice el modulo? ok
-8. Si la tarea de antes provoca un changed, muevo el fichero de tmp a /backups
+        el mismo contenido
+qué dice el modulo? ok
+8. Si la tarea de antes provoca un changed
+muevo el fichero de tmp a /backups
     changed!!!  
 
 
@@ -147,7 +159,8 @@ de una variable (que se guarda dentro de la variable custom_facts) con el nombre
 
 # Git??
 
-En git, tenemos un REPO... y en ese REPO guardamos COMMITS
+En git
+tenemos un REPO... y en ese REPO guardamos COMMITS
     
                         Esto es un commit: en GIT
                         vvv
@@ -167,7 +180,8 @@ saber si ha cambiado algo en la app??? EL ID DEL COMMIT
 
 Algoritmo de HUELLA(HASH)
 
-- función que al recibir un valor devuelve otro, de forma que:
+- función que al recibir un valor devuelve otro
+de forma que:
     - El valor devuelto siempre es el mismo para el mismo valor de entrada
     - Hay muy pocas probaiblidades(% colisión) de que 2 valores de entrada diferentes generen el mismo valor de salida
          4%
@@ -199,3 +213,109 @@ ya que no se han evaluado aún: IMPORT !
 
 ansible-playbook --list-tags no incluye las de los include_task
                  --list-tasks
+                 
+                 
+                 
+                 
+                 
+---
+{
+    'results': [
+        {
+        'changed': False
+        'cache_updated': False
+        'cache_update_time': 1740665553
+        'invocation': {'module_args': {'name': 'git\\n'
+        'state': 'latest'
+        'package': ['git\\n']
+        'update_cache_retries': 5
+        'update_cache_retry_max_delay': 12
+        'cache_valid_time': 0
+        'purge': False
+        'force': False
+        'dpkg_options': 'force-confdef,force-confold'
+        'autoremove': False
+        'autoclean': False
+        'only_upgrade': False
+        'force_apt_get': False
+        'allow_unauthenticated': False
+        'update_cache': None
+        'deb': None
+        'default_release': None
+        'install_recommends': None
+        'upgrade': None
+        'policy_rc_d': None}}
+        'failed': False
+        'item': 
+            {   
+                'name': 'git'
+                'repos': []
+            }
+        'ansible_loop_var': 'item'
+    }
+    {
+        'changed': False
+        'cache_updated': False
+        'cache_update_time': 1740665553
+        'invocation': {'module_args': {'name': 'net-tools\\n'
+        'state': 'latest'
+        'package': ['net-tools\\n']
+        'update_cache_retries': 5
+        'update_cache_retry_max_delay': 12
+        'cache_valid_time': 0
+        'purge': False
+        'force': False
+        'dpkg_options': 'force-confdef,force-confold'
+        'autoremove': False
+        'autoclean': False
+        'only_upgrade': False
+        'force_apt_get': False
+        'allow_unauthenticated': False
+        'update_cache': None
+        'deb': None
+        'default_release': None
+        'install_recommends': None
+        'upgrade': None
+        'policy_rc_d': None}}
+        'failed': False
+        'item': {
+            'name': 'net-tools'
+        }
+        'ansible_loop_var': 'item'
+    }
+    {
+        'changed': False
+        'cache_updated': False
+        'cache_update_time': 1740665553
+        'invocation': {'module_args': {'name': 'curl\\n'
+        'state': 'latest'
+        'package': ['curl\\n']
+        'update_cache_retries': 5
+        'update_cache_retry_max_delay': 12
+        'cache_valid_time': 0
+        'purge': False
+        'force': False
+        'dpkg_options': 'force-confdef,force-confold'
+        'autoremove': False
+        'autoclean': False
+        'only_upgrade': False
+        'force_apt_get': False
+        'allow_unauthenticated': False
+        'update_cache': None
+        'deb': None
+        'default_release': None
+        'install_recommends': None
+        'upgrade': None
+        'policy_rc_d': None}}
+        'failed': False
+        'item': {
+            'name': 'curl'
+            'repos': []
+        }
+        'ansible_loop_var': 'item'
+    }
+]
+    'msg': 'All items completed'
+    'changed': False
+    
+}

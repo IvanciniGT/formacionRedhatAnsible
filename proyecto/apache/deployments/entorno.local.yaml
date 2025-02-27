@@ -11,5 +11,6 @@ apache:
             url:          https://github.com/IvanciniGT/webEjemploAnsible.git
             #user:         mi-usuarios
             #password:     super-secreta
-    apache_modules: []
+    apache_modules: 
+      - name:            libapache2-mod-php
     backups_dir:         /var/backups/apache

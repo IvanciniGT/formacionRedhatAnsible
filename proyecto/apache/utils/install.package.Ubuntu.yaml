@@ -25,7 +25,7 @@
   become:             True
   when:               repos_actualizados is changed # is failed     is succeded    is skipped
 
-- name:               "Asegurar que la el paquete {{ item.name }} queda instalado"
+- name:               "Asegurar que el paquete queda instalado"
   apt:
     name: |
                       {{ item.name }}
@@ -42,7 +42,23 @@
 
   loop:               "{{ packages_to_install }}"
   become:   True
+  register:           paquete_instalado
 
+#- debug: 
+#    msg: |
+#                    {{ paquete_instalado is changed }}
+#                    {{ notificar_en_caso_de_que_se_instale_un_paquete is defined }}
+#                    {{ paquete_instalado  }}
+#                    {{ notificar_en_caso_de_que_se_instale_un_paquete  | default ("NINGUNA")}}
+
+- name:               Notificar a los handlers
+  debug: 
+    msg:              "Se notifica al handler: {{notificar_en_caso_de_que_se_instale_un_paquete}}"
+  changed_when:        True
+  when: 
+                    - paquete_instalado is changed 
+                    - notificar_en_caso_de_que_se_instale_un_paquete is defined
+  notify:             "{{notificar_en_caso_de_que_se_instale_un_paquete}}"
 
 
 #item:

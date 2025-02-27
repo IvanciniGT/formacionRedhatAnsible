@@ -1,14 +1,16 @@
   
-- name: Asegurar que apache queda instalado en la versión indicada
-  include_tasks: utils/install.package.{{ansible_distribution}}.yaml
+- name:               Asegurar que apache queda instalado en la versión indicada
+  include_tasks:      utils/install.package.{{ansible_distribution}}.yaml
   vars:
     packages_to_install: 
-      - name:     apache2
-        version:  "{{ apache.version | default(None) }}"
-        repos:    "{{ apache.repos | default( [] ) }}"
+      - name:         apache2
+        version:      "{{ apache.version | default(None) }}"
+        repos:        "{{ apache.repos | default( [] ) }}"
 
-- name: Asegurar que los módulos de apache solicitados quedan instalados en la versión solicitada
-  include_tasks: utils/install.package.{{ansible_distribution}}.yaml
+- name:               Asegurar que los módulos de apache solicitados quedan instalados en la versión solicitada
+  include_tasks:      utils/install.package.{{ansible_distribution}}.yaml
   vars:
     packages_to_install: "{{ apache.apache_modules }}"
-  #notify: reinicio-requerido
+    notificar_en_caso_de_que_se_instale_un_paquete: reinicio-requerido
+  #notity:             reinicio-requerido
+

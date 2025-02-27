@@ -107,7 +107,7 @@
     - name:           Hago una copia temporal del archivo de configuración del virtual host
       copy:     
         remote_src:   True
-        src:          "{{ constants.virtualhosts.path[ansible_distribution] }}/{{ virtualhost.domain }}.conf"
+        src:          "{{ constants.virtualhosts.path[ansible_distribution] }}/{{ customfact_name }}.conf"
         dest:         "/tmp/{{ despliegue_id }}.conf"
       changed_when:   False
       failed_when:    False
@@ -116,7 +116,7 @@
     - name:         Asegurar que existe un fichero de configuración con la información adecuada específico para el virtual host (basado en una plantilla)
       template:
         src:        templates/virtual.host.template.j2
-        dest:       "{{ constants.virtualhosts.path[ansible_distribution] }}/{{ virtualhost.domain }}.conf"
+        dest:       "{{ constants.virtualhosts.path[ansible_distribution] }}/{{ customfact_name }}.conf"
       notify:       reinicio-requerido
       become:       True
       register:     informacion_configuracion
@@ -124,7 +124,7 @@
     - name:           Hacer un backup del archivo de configuración del virtualhost antiguo
       copy:     
         remote_src:   True
-        dest:         "{{ apache.backups_dir }}/{{ virtualhost.domain }}-{{ansible_date_time.iso8601_basic}}.conf"
+        dest:         "{{ apache.backups_dir }}/{{ customfact_name }}-{{ansible_date_time.iso8601_basic}}.conf"
         src :         "/tmp/{{ despliegue_id }}.conf"
       become:         True
       failed_when:    False
