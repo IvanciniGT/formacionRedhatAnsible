@@ -16,13 +16,14 @@
     state:            present
   loop:               "{{ packages_to_install | subelements('repos', skip_missing=True) }}"
   when:               item.1.apt is defined
+  register:           repos_actualizados
   become:   True
 
 - name:               Asegurar que apt está actualizado con la información de los repos
   apt:
     update_cache:     yes
   become:             True
-  changed_when:       False
+  when:               repos_actualizados is changed # is failed     is succeded    is skipped
 
 - name:               "Asegurar que la el paquete {{ item.name }} queda instalado"
   apt:

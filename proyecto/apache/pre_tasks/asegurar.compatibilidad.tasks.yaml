@@ -1,10 +1,4 @@
-- name:             Averiguar el Sistema Operativo del host
-  setup:
-    gather_subset:
-                  - '!all'
-                  - '!min'
-                  - date_time
-                  - distribution
+
 
 - name:             Informar de la viabilidad de este playbook
   debug:

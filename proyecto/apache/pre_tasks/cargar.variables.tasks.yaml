@@ -1,3 +1,11 @@
+- name:             Averiguar el Sistema Operativo del host
+  setup:
+    gather_subset:
+                  - '!all'
+                  - '!min'
+                  - date_time
+                  - distribution
+                  
 - name:           Cargar variables por defecto, si no se ha suministrado un fichero de variables válido
   include_vars:
     file:         "internal_vars/apache.vars.default.yaml"
