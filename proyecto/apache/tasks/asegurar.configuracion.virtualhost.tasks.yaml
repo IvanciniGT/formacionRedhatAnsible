@@ -4,6 +4,12 @@
 #    path:    "{{ virtualhost.document_root }}"
 #  register:  document_root_status
 
+- name:     Asegurar que el directorio de backups existe
+  file:
+    state:  directory
+    path:   "{{ apache.backups_dir }}"
+  become:   True
+  
 - name:         Mirar si el virtualhost document root tiene contenido
   shell:        "ls -A {{ virtualhost.document_root }} 2>/dev/null | wc -l"
   register:     document_root_contents
@@ -11,13 +17,32 @@
   changed_when:  False
 #  when:      document_root_status.stat.exists
 
+- name:         Vamos a crear un ID único para el despliegue
+  set_fact:
+    despliegue_id: "{{ ansible_date_time.iso8601_basic | to_uuid }}"
+    customfact_name: "{{virtualhost.domain+(virtualhost.port|string)}}"
+    customfact_value: "{{ansible_local[virtualhost.domain+(virtualhost.port|string)]['version'] | default('') }}"
+
+- name:         Obtener el ID de la versión de la app en git
+  git:
+    repo:       "{{ virtualhost.repo_git.url }}"
+    clone:      False
+    update:     False
+  register:     informacion_repo_git
+  changed_when: False
+  become:       True
+  
+#- name: Mostrar nuestras variables
+#  debug: 
+#    msg: |
+#            {{ansible_local}}
+#            {{despliegue_id}}
+#            {{customfact_name}}
+#            {{customfact_value}}
+    
+  
 - name:         Asegurar que el directorio está vacío
   block:
-    - name:     Asegurar que el directorio de backups existe
-      file:
-        state:  directory
-        path:   "{{ apache.backups_dir }}"
-      become:   True
         
     - name:     Asegurar que si hay algo, le hago copia de seguridad
       archive:
@@ -31,25 +56,80 @@
         path:   "{{ virtualhost.document_root }}"
       become:   True
 
-  when:         document_root_contents.stdout | int > 0
-
-- name:         Asegurar que el directorio del document root existe
-  file:
-    state:      directory
-    path:       "{{ virtualhost.document_root }}"
-  become:   True
+  when:         
+    - document_root_contents.stdout | int > 0
+    - customfact_value == '' or customfact_value != informacion_repo_git.after
 
 - name:         Asegurar que la versión de la app o web solicitada esta descargada de git
-  git:
-    repo:       "{{ virtualhost.repo_git.url }}"
-    dest:       "{{ virtualhost.document_root }}"
-    depth:      1
-  become:   True
+  block:
 
-- name:         Asegurar que existe un fichero de configuración con la información adecuada específico para el virtual host (basado en una plantilla)
-  template:
-    src:        templates/virtual.host.template.j2
-    dest:       "{{ constants.virtualhosts.path[ansible_distribution] }}/{{ virtualhost.domain }}.conf"
-  notify:       reinicio-requerido
-  become:   True
+    - name:     Asegurar que el directorio del document root existe
+      file:
+        state:  directory
+        path:   "{{ virtualhost.document_root }}"
+      become:   True
+      
+    - name:     Asegurar que obtemos la nueva versión de la app
+      git:  
+        repo:   "{{ virtualhost.repo_git.url }}"
+        dest:   "{{ virtualhost.document_root }}"
+        depth:  1
+      become:   True
+      
+    - name:     Asegurar que no exportamos por Apache la carpeta del repo de git
+      file:     
+        path:   "{{ virtualhost.document_root }}/.git"
+        state:  absent
+      become:   True
+      
+    - name:     Asegurar que la carpeta de los custom facts existe
+      file:     
+        path:   "/etc/ansible/facts.d"
+        state:  directory
+      become:   True
 
+    - name:     Asegurar que se guarda la versión instalada en un custom fact
+      copy:     
+        dest:   "/etc/ansible/facts.d/{{customfact_name}}.fact"
+        content: |
+                    {
+                      "version": "{{informacion_repo_git.after}}"
+                    }
+      become:   True
+    
+  when:         
+    - customfact_value == '' or customfact_value != informacion_repo_git.after
+
+- name:         Asegurarnos que el archivo de configuración del virtual host queda como debe estar
+  block:
+        
+    - name:           Hago una copia temporal del archivo de configuración del virtual host
+      copy:     
+        remote_src:   True
+        src:          "{{ constants.virtualhosts.path[ansible_distribution] }}/{{ virtualhost.domain }}.conf"
+        dest:         "/tmp/{{ despliegue_id }}.conf"
+      changed_when:   False
+      become:         True
+    
+    - name:         Asegurar que existe un fichero de configuración con la información adecuada específico para el virtual host (basado en una plantilla)
+      template:
+        src:        templates/virtual.host.template.j2
+        dest:       "{{ constants.virtualhosts.path[ansible_distribution] }}/{{ virtualhost.domain }}.conf"
+      notify:       reinicio-requerido
+      become:       True
+      register:     informacion_configuracion
+    
+    - name:           Hacer un backup del archivo de configuración del virtualhost antiguo
+      copy:     
+        remote_src:   True
+        dest:         "{{ apache.backups_dir }}/{{ virtualhost.domain }}-{{ansible_date_time.iso8601_basic}}.conf"
+        src :         "/tmp/{{ despliegue_id }}.conf"
+      become:         True
+      when:           informacion_configuracion is changed
+    
+    - name:           Borrar la copia temporal del archivo de configuración del virtual host
+      file:     
+        path:         "/tmp/{{ despliegue_id }}.conf"
+        state:        absent
+      become:         True
+      changed_when:   False

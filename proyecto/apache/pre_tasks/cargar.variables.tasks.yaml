@@ -5,6 +5,7 @@
                   - '!min'
                   - date_time
                   - distribution
+                  - local
                   
 - name:           Cargar variables por defecto, si no se ha suministrado un fichero de variables válido
   include_vars:

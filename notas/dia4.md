@@ -38,7 +38,7 @@ Virtual host
 
 
 1. Mirar si ya existe la capreta del virtualhost (document root)
-4. Clonamos repo en una carpeta de despliegues: /var/apache/despliegues
+4. Clonamos repo en una carpeta de despliegues: /tmp/despliegues
     Cuando clono el repo, si el repo ya existe en la misma versión que dice el modulo? ok
     Cuando clono el repo, si el repo ya existe en otra versión que dice el modulo? changed
     Cuando clono el repo, si el repo no existe que dice el modulo? changed
@@ -56,7 +56,7 @@ Virtual host
         - Puedo guardarlo en un ficherito de texto
         - Guardarlo en CUSTOM FACT de Ansible en mi host
            /etc/ansible/facts.d/{{virtualhost}}.fact
-5. Borro la carpeta del /var/apache/despliegues...
+5. Borro la carpeta del /tmp/despliegues...
 
 
 6. Copiar el fichero de la configurción en /tmp
