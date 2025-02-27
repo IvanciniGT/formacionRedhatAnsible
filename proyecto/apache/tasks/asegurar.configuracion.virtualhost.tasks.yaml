@@ -109,6 +109,7 @@
         src:          "{{ constants.virtualhosts.path[ansible_distribution] }}/{{ virtualhost.domain }}.conf"
         dest:         "/tmp/{{ despliegue_id }}.conf"
       changed_when:   False
+      failed_when:    False
       become:         True
     
     - name:         Asegurar que existe un fichero de configuración con la información adecuada específico para el virtual host (basado en una plantilla)

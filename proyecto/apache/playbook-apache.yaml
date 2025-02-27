@@ -51,12 +51,10 @@
   handlers:
 
     - name:           Asegurar que el servicio de apache es reiniciado si ha habido cambios
-      debug: 
-        msg:          "Reiniciando el servicio de apache" # TODO 
-      tags:
-                    - configuracion
-      listen:         reinicio-requerido
+      include_tasks:  handlers/handlers.tasks.yaml
 
 
 
 # No voy a usar NI UN SOLO MODULO EN ESTE FICHERO.-.. que no sea el módulo include_tasks:
+
+# En ansible tenemos 2 modulos diferentes: include_tasks | import_tasks... y no son iguales... aunque lo parecen

@@ -1,0 +1,7 @@
+
+- name:           Asegurar que el servicio de apache es reiniciado si ha habido cambios
+  debug: 
+    msg:          "Reiniciando el servicio de apache" # TODO 
+  tags:
+                - configuracion
+  listen:         reinicio-requerido
