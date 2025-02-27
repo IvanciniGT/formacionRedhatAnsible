@@ -74,6 +74,7 @@
         repo:   "{{ virtualhost.repo_git.url }}"
         dest:   "{{ virtualhost.document_root }}"
         depth:  1
+      notify:   reinicio-requerido
       become:   True
       
     - name:     Asegurar que no exportamos por Apache la carpeta del repo de git
@@ -126,6 +127,7 @@
         dest:         "{{ apache.backups_dir }}/{{ virtualhost.domain }}-{{ansible_date_time.iso8601_basic}}.conf"
         src :         "/tmp/{{ despliegue_id }}.conf"
       become:         True
+      failed_when:    False
       when:           informacion_configuracion is changed
     
     - name:           Borrar la copia temporal del archivo de configuración del virtual host

@@ -186,3 +186,16 @@ Algoritmo más sencillo que podeís haber usado de tipo hash es la letra del DNI
              |
              v
              Estará entre 0-22. En nuestro caso: Resto 1: Letra: R
+             
+             
+Los include son dinámicos ( se procesan en tiempo de ejecución)
+Los import son estáticos ( se procesan en cuantito se carga el playbook)
+
+En un import no puedo usar bucles.
+Ni puedo hacer imports de ficheros cuyo nombre dependa de una variable.
+
+Si ponemos handlers en un include... Cuando los invoquemos nos dará un error,
+ya que no se han evaluado aún: IMPORT !
+
+ansible-playbook --list-tags no incluye las de los include_task
+                 --list-tasks

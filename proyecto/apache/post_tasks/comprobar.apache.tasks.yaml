@@ -24,7 +24,7 @@
 
 - name:         Comprobar si puedo acceder a los servicios desde remoto
   uri: 
-    url:        "http://{{inventory_hostname}}:{{virtualhost.port}}"
+    url:        "http://{{virtualhost.domain}}:{{virtualhost.port}}"
     method:     GET
   delegate_to: localhost
   loop:         "{{ apache.virtual_hosts }}"

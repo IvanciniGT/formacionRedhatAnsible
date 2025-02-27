@@ -1,7 +1,9 @@
 
 - name:           Asegurar que el servicio de apache es reiniciado si ha habido cambios
-  debug: 
-    msg:          "Reiniciando el servicio de apache" # TODO 
+  systemd:
+    name:         "{{ constants.service[ ansible_distribution ] }}"
+    state:        restarted
   tags:
                 - configuracion
   listen:         reinicio-requerido
+  become:         True
