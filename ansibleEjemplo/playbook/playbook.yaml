@@ -1,0 +1,5 @@
+- hosts:        all
+  gather_facts: False
+  tasks:
+    - debug:
+        msg:    "Hola Redhat Automation Platform"

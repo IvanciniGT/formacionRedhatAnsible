@@ -1,0 +1,19 @@
+services:
+
+    entorno1:
+        container_name: entorno1
+        image:          rastasheep/ubuntu-sshd
+        ports:
+            - 1022:22
+
+    entorno2:
+        container_name: entorno2
+        image:          rastasheep/ubuntu-sshd
+        ports:
+            - 1023:22
+        
+    entorno3:
+        container_name: entorno3
+        image:          rastasheep/ubuntu-sshd
+        ports:
+            - 1024:22

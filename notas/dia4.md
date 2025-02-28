@@ -319,3 +319,27 @@ ansible-playbook --list-tags no incluye las de los include_task
     'changed': False
     
 }
+
+
+---
+
+Ansible Tower:
+    Entradas de menu:
+        - Proyecto: (Repo de git)
+        - Templates:  Playbook
+        - Inventario: los host los saco del PROYECTO !
+            Meter a mano los hosts!
+                Estaticamente   \
+                Dinamicamente   / RUINA !
+                
+        Basado en un template puedo crear Jobs: Ejecución de un playbook
+        - Para poder connectar con un remoto, necesito credenciales:
+            Y ESAS SI QUE LAS METO A MANO
+        
+        - Schedule: Ejecutar Jobs con una periodicidad = RUINA !
+            Periodicidad
+        
+        Quien me da más control sobre eso... MUCHO MAS CONTROL !!!! Jenkins o similar
+        
+        Orquestador GRANDE: 
+            ---> TOWER
